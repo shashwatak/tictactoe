@@ -1,6 +1,6 @@
 use core::fmt;
 
-#[derive(Debug, Default) ]
+#[derive(Debug, Default)]
 enum Cell {
     #[default]
     Empty,
@@ -18,7 +18,7 @@ impl std::fmt::Display for Cell {
     }
 }
 
-#[derive(Debug, Default) ]
+#[derive(Debug, Default)]
 struct Game {
     // we will use iterators to turn these 9 cells into
     // coherent rows and columns
@@ -26,19 +26,33 @@ struct Game {
     // TODO abstract to any NxN (or NxM?) board
 }
 
+fn display_cell_in_middle(cell: &Cell) -> String {
+    format!(" {} |", cell)
+}
+
+fn display_cell_at_end(cell: &Cell) -> String {
+    format!(" {} \n", cell)
+}
+
 impl std::fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.cells[0])
+        let mut out: String = "".to_string();
+        for i in 0..9 {
+            match i {
+                n if n % 3 == 2 => out.push_str(&display_cell_at_end(&self.cells[i])),
+                _ => out.push_str(&display_cell_in_middle(&self.cells[i])),
+            }
+        }
+        write!(f, "{out}")
     }
 }
 fn main() {
-    let cell_o = Cell::O;
-    let cell_x = Cell::X;
-    let cell_empty = Cell::Empty;
-    println!("{cell_o} {cell_x} {cell_empty}");
-
+    let mut game = Game::default();
+    game.cells[0] = Cell::X;
+    game.cells[4] = Cell::O;
+    game.cells[8] = Cell::X;
+    println!("{game}");
 }
-
 
 #[cfg(test)]
 mod tests {
