@@ -1,19 +1,41 @@
 use core::fmt;
+use std::str::FromStr;
 
 #[derive(Debug, Default)]
 enum Cell {
     #[default]
-    Empty,
+    Unmarked,
     X,
     O,
 }
 
-impl std::fmt::Display for Cell {
+impl fmt::Display for Cell {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Cell::X => write!(f, "X"),
             Cell::O => write!(f, "O"),
-            Cell::Empty => write!(f, " "),
+            Cell::Unmarked => write!(f, " "),
+        }
+    }
+}
+
+#[derive(Debug)]
+enum ParseCellError {
+    Empty,
+    BadLen,
+    BadChar,
+}
+
+impl FromStr for Cell {
+    type Err = ParseCellError;
+    fn from_str(cell_str: &str) -> Result<Self, Self::Err> {
+        match cell_str {
+            "X" => Ok(Cell::X),
+            "O" => Ok(Cell::O),
+            " " => Ok(Cell::Unmarked),
+            "" => Err(Self::Err::Empty),
+            c if c.len() >= 2 => Err(Self::Err::BadLen),
+            _ => Err(Self::Err::BadChar),
         }
     }
 }
@@ -26,32 +48,35 @@ struct Game {
     // TODO abstract to any NxN (or NxM?) board
 }
 
-fn display_cell_in_middle(cell: &Cell) -> String {
-    format!(" {} |", cell)
-}
-
-fn display_cell_at_end(cell: &Cell) -> String {
-    format!(" {} \n", cell)
-}
-
-impl std::fmt::Display for Game {
+impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut out: String = "".to_string();
-        for i in 0..9 {
-            match i {
-                n if n % 3 == 2 => out.push_str(&display_cell_at_end(&self.cells[i])),
-                _ => out.push_str(&display_cell_in_middle(&self.cells[i])),
-            }
-        }
-        write!(f, "{out}")
+        let out: Vec<String> = self
+            .cells
+            .iter()
+            .enumerate()
+            .map(|val| 
+            match val {
+                (i, cell) if i % 3 == 2 => cell.to_string() + "\n", 
+                (_, cell) => cell.to_string(),
+            })
+            .collect();
+        // for i in 0..9 {
+        //     let cell = &self.cells[i].to_string();
+        //     match i {
+        //         n if n % 3 == 2 => out.push_str(cell),
+        //         _ => out.push_str(cell),
+        //     }
+        // }
+        write!(f, "{}", out.join(""))
     }
 }
+
 fn main() {
     let mut game = Game::default();
     game.cells[0] = Cell::X;
     game.cells[4] = Cell::O;
     game.cells[8] = Cell::X;
-    println!("{game}");
+    println!("{}", game.to_string());
 }
 
 #[cfg(test)]
