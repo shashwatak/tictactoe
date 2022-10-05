@@ -50,15 +50,7 @@ struct Game {
 
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let out: Vec<String> = self
-            .cells
-            .iter()
-            .enumerate()
-            .map(|val| match val {
-                (i, cell) if i % 3 == 2 => cell.to_string() + "\n",
-                (_, cell) => cell.to_string(),
-            })
-            .collect();
+        let out: Vec<String> = self.cells.iter().map(|cell| cell.to_string()).collect();
         write!(f, "{}", out.join(""))
     }
 }
@@ -66,8 +58,7 @@ impl fmt::Display for Game {
 impl FromStr for Game {
     type Err = ParseCellError;
     fn from_str(game_str: &str) -> Result<Self, Self::Err> {
-        let game_string: String = game_str.chars().filter(|c| *c != '\n').collect();
-        match &game_string[..] {
+        match game_str {
             "" => Err(Self::Err::Empty),
             g if g.len() != 9 => Err(Self::Err::BadLen),
             g => {
@@ -132,25 +123,28 @@ mod tests {
             assert!(matches!(game, Err(ParseCellError::Empty)));
         }
         {
-            let game = "XXO\nOO\nXXO".to_string().parse::<Game>();
+            let game = "X OOOXXO".to_string().parse::<Game>();
             assert!(matches!(game, Err(ParseCellError::BadLen)));
         }
         {
-            let game = "XXO\nOOX\nXXXO".to_string().parse::<Game>();
+            let game = "XXOOOXXXXO".to_string().parse::<Game>();
             assert!(matches!(game, Err(ParseCellError::BadLen)));
         }
         {
-            let game = "XXO\nOOD\nXXO".to_string().parse::<Game>();
+            let game = "XXOOODXXO".to_string().parse::<Game>();
+            println!("{game:?}");
             assert!(matches!(game, Err(ParseCellError::BadChar)));
         }
     }
 
     #[test]
     fn test_game_to_from_string() {
-        let expected_game = "XOX\nOXO\nOXO\n";
-        let game = expected_game.to_string().parse::<Game>();
-        assert!(matches!(game, Ok(_)));
-        let result_game = game.unwrap().to_string();
-        assert_eq!(expected_game, result_game);
+        let good_games = ["XOXOXOOXO"];
+        for expected_game in good_games {
+            let game = expected_game.to_string().parse::<Game>();
+            assert!(matches!(game, Ok(_)));
+            let result_game = game.unwrap().to_string();
+            assert_eq!(expected_game, result_game);
+        }
     }
 }
