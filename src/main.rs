@@ -70,7 +70,17 @@ impl FromStr for Game {
         match &game_string[..] {
             "" => Err(Self::Err::Empty),
             g if g.len() != 9 => Err(Self::Err::BadLen),
-            g => g.chars().enumerate().map(|i, v| ),
+            g => {
+                let mut game = Game::default();
+                g.chars().enumerate().for_each(|(i, v)| {
+                    let cell_maybe = v.to_string().parse::<Cell>();
+                    match cell_maybe {
+                        Ok(_) => game.cells[i] = cell_maybe.unwrap(),
+                        _ => (),
+                    }
+                });
+                Ok(game)
+            }
         }
     }
 }
@@ -137,7 +147,7 @@ mod tests {
 
     #[test]
     fn test_game_to_from_string() {
-        let expected_game = "XOX\nOXO\nOXO";
+        let expected_game = "XOX\nOXO\nOXO\n";
         let game = expected_game.to_string().parse::<Game>();
         assert!(matches!(game, Ok(_)));
         let result_game = game.unwrap().to_string();
