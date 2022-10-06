@@ -63,11 +63,11 @@ impl FromStr for Game {
             g if g.len() != 9 => Err(Self::Err::BadLen),
             _ => {
                 let mut game = Game::default();
-                let mut errs : Vec<Self::Err> = vec!();
+                let mut errs: Vec<Self::Err> = vec![];
                 game_str.chars().enumerate().for_each(|(i, cell_char)| {
                     let cell_maybe = cell_char.to_string().parse::<Cell>();
                     match cell_maybe {
-                        Ok(_) => { game.cells[i] = cell_maybe.unwrap(); ()},
+                        Ok(_) => game.cells[i] = cell_maybe.unwrap(),
                         Err(e) => errs.push(e),
                     }
                 });
@@ -87,7 +87,10 @@ impl FromStr for Game {
 
                 //     };
                 // };
-                Ok(game)
+                match &errs[..] {
+                    [] => Ok(game),
+                    [..] => Err(Self::Err::BadChar),
+                }
             }
         }
     }
