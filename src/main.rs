@@ -23,7 +23,7 @@ impl fmt::Display for Cell {
 enum ParseCellError {
     Empty,
     BadLen,
-    BadChar,
+    BadChar(char),
 }
 
 impl FromStr for Cell {
@@ -35,7 +35,7 @@ impl FromStr for Cell {
             "X" => Ok(Cell::X),
             "O" => Ok(Cell::O),
             " " => Ok(Cell::Unmarked),
-            _ => Err(Self::Err::BadChar),
+            c => Err(Self::Err::BadChar(c.chars().next().unwrap())),
         }
     }
 }
@@ -59,7 +59,7 @@ impl fmt::Display for Game {
 enum ParseGameError {
     Empty,
     BadLen,
-    BadChars(Vec<usize>),
+    BadChars(Vec<(usize, char)>),
 }
 
 impl FromStr for Game {
@@ -70,13 +70,14 @@ impl FromStr for Game {
             g if g.len() != 9 => Err(Self::Err::BadLen),
             _ => {
                 let mut game = Game::default();
-                let mut errs: Vec<usize> = vec![];
+                let mut errs: Vec<(usize, char)> = vec![];
                 
                 game_str.chars().enumerate().for_each(|(i, cell_char)| {
                     let cell_maybe = cell_char.to_string().parse::<Cell>();
                     match cell_maybe {
-                        Ok(_) => game.cells[i] = cell_maybe.unwrap(),
-                        Err(_) => errs.push(i),
+                        Ok(cell) => game.cells[i] = cell,
+                        Err(ParseCellError::BadChar(c)) => errs.push((i, c)),
+                        _ => panic!("unexpected unknown error"),
                     }
                 });
                 
@@ -114,7 +115,7 @@ mod tests {
         }
         {
             let cell = "D".to_string().parse::<Cell>();
-            assert!(matches!(cell, Err(ParseCellError::BadChar)));
+            assert!(matches!(cell, Err(ParseCellError::BadChar(_))));
         }
     }
 
@@ -148,7 +149,7 @@ mod tests {
             match game {
                 Err(ParseGameError::BadChars(a)) => {
                     match &a[..] {
-                        [5] => assert!(true),
+                        [(5, 'D')] => assert!(true),
                         _ => assert!(false),
 
                     }
