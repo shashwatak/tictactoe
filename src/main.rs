@@ -55,41 +55,34 @@ impl fmt::Display for Game {
     }
 }
 
+#[derive(Debug)]
+enum ParseGameError {
+    Empty,
+    BadLen,
+    BadChars(Vec<usize>),
+}
+
 impl FromStr for Game {
-    type Err = ParseCellError;
+    type Err = ParseGameError;
     fn from_str(game_str: &str) -> Result<Self, Self::Err> {
         match game_str {
             "" => Err(Self::Err::Empty),
             g if g.len() != 9 => Err(Self::Err::BadLen),
             _ => {
                 let mut game = Game::default();
-                let mut errs: Vec<Self::Err> = vec![];
+                let mut errs: Vec<usize> = vec![];
+                
                 game_str.chars().enumerate().for_each(|(i, cell_char)| {
                     let cell_maybe = cell_char.to_string().parse::<Cell>();
                     match cell_maybe {
                         Ok(_) => game.cells[i] = cell_maybe.unwrap(),
-                        Err(e) => errs.push(e),
+                        Err(_) => errs.push(i),
                     }
                 });
-                // game.cells.iter_into().for_each(|cell_char| {
-                //     let cell_maybe = cell_char.to_string().parse::<Cell>());
-                //     match cell_maybe {
-                //         Ok(_) => cell
-                //     }
-                // });
-                // let maybe_cells: Vec<Result<Cell, Self::Err>> = g
-                //     .chars()
-                //     .map(|v| v.to_string().parse::<Cell>()).collect();
-                // for maybe_cell in maybe_cells {
-                //     match maybe_cell {
-                //         Ok(_) => maybe_cell?,
-                //         Err(_) => Err(Self::Err::BadLen)?,
-
-                //     };
-                // };
+                
                 match &errs[..] {
                     [] => Ok(game),
-                    [..] => Err(Self::Err::BadChar),
+                    [..] => Err(Self::Err::BadChars(errs)),
                 }
             }
         }
@@ -140,20 +133,20 @@ mod tests {
     fn test_bad_game_to_from_string() {
         {
             let game = "".to_string().parse::<Game>();
-            assert!(matches!(game, Err(ParseCellError::Empty)));
+            assert!(matches!(game, Err(ParseGameError::Empty)));
         }
         {
             let game = "X OOOXXO".to_string().parse::<Game>();
-            assert!(matches!(game, Err(ParseCellError::BadLen)));
+            assert!(matches!(game, Err(ParseGameError::BadLen)));
         }
         {
             let game = "XXOOOXXXXO".to_string().parse::<Game>();
-            assert!(matches!(game, Err(ParseCellError::BadLen)));
+            assert!(matches!(game, Err(ParseGameError::BadLen)));
         }
         {
             let game = "XXOOODXXO".to_string().parse::<Game>();
             println!("{game:?}");
-            assert!(matches!(game, Err(ParseCellError::BadChar)));
+            assert!(matches!(game, Err(ParseGameError::BadChars(_))));
         }
     }
 
