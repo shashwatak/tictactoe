@@ -145,8 +145,16 @@ mod tests {
         }
         {
             let game = "XXOOODXXO".to_string().parse::<Game>();
-            println!("{game:?}");
-            assert!(matches!(game, Err(ParseGameError::BadChars(_))));
+            match game {
+                Err(ParseGameError::BadChars(a)) => {
+                    match &a[..] {
+                        [5] => assert!(true),
+                        _ => assert!(false),
+
+                    }
+                },
+                _ => assert!(false),
+            }
         }
     }
 
