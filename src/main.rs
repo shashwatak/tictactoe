@@ -94,6 +94,18 @@ impl FromStr for Game {
     }
 }
 
+struct Row {
+    cell_idx : usize,
+}
+
+impl Row {
+    fn new(start: usize) -> Row{
+        Row {
+            cell_idx: start,
+        }
+    }
+}
+
 fn main() {
     let mut game = Game::default();
     game.cells[0] = Cell::X;
@@ -173,5 +185,12 @@ mod tests {
             let result_game = game.unwrap().to_string();
             assert_eq!(expected_game, result_game);
         }
+    }
+
+    #[test]
+    fn test_row_iter() {
+        let game = "XOXOXOOXO".to_string().parse::<Game>();
+        let row = Row::new(0);
+        
     }
 }
