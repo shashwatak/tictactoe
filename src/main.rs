@@ -40,10 +40,9 @@ impl FromStr for Cell {
     }
 }
 
-
-const NUM_COLS : usize = 3;
-const NUM_ROWS : usize = 3;
-const NUM_CELLS : usize = NUM_ROWS * NUM_COLS;
+const NUM_COLS: usize = 3;
+const NUM_ROWS: usize = 3;
+const NUM_CELLS: usize = NUM_ROWS * NUM_COLS;
 
 #[derive(Debug, Default)]
 struct Game {
@@ -75,7 +74,7 @@ impl FromStr for Game {
             _ => {
                 let mut game = Game::default();
                 let mut errs: Vec<(usize, char)> = vec![];
-                
+
                 game_str.chars().enumerate().for_each(|(i, cell_char)| {
                     let cell_maybe = cell_char.to_string().parse::<Cell>();
                     match cell_maybe {
@@ -84,7 +83,7 @@ impl FromStr for Game {
                         _ => panic!("unexpected unknown error"),
                     }
                 });
-                
+
                 match &errs[..] {
                     [] => Ok(game),
                     [..] => Err(Self::Err::BadChars(errs)),
@@ -95,14 +94,12 @@ impl FromStr for Game {
 }
 
 struct Row {
-    cell_idx : usize,
+    cell_idx: usize,
 }
 
 impl Row {
-    fn new() -> Row{
-        Row {
-            cell_idx: 0,
-        }
+    fn new() -> Row {
+        Row { cell_idx: 0 }
     }
 }
 
@@ -164,12 +161,9 @@ mod tests {
         {
             let game = "XXOOODXXO".to_string().parse::<Game>();
             match game {
-                Err(ParseGameError::BadChars(a)) => {
-                    match &a[..] {
-                        [(5, 'D')] => assert!(true),
-                        _ => assert!(false),
-
-                    }
+                Err(ParseGameError::BadChars(a)) => match &a[..] {
+                    [(5, 'D')] => assert!(true),
+                    _ => assert!(false),
                 },
                 _ => assert!(false),
             }
@@ -191,6 +185,5 @@ mod tests {
     fn test_row_iter() {
         let game = "XOXOXOOXO".to_string().parse::<Game>();
         let row = Row::new();
-        
     }
 }
