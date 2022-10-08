@@ -94,7 +94,7 @@ fn main() {
     game.cells[0] = Cell::X;
     game.cells[4] = Cell::O;
     game.cells[8] = Cell::X;
-    println!("{}", game.to_string());
+    println!("{}", game);
 }
 
 #[cfg(test)]
