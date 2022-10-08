@@ -40,14 +40,16 @@ impl FromStr for Cell {
     }
 }
 
-const SIZE : usize = 9;
+
+const NUM_COLS : usize = 3;
+const NUM_ROWS : usize = 3;
+const NUM_CELLS : usize = NUM_ROWS * NUM_COLS;
 
 #[derive(Debug, Default)]
 struct Game {
     // we will use iterators to turn cells into
     // coherent rows and columns
-    cells: [Cell; SIZE],
-    // TODO abstract to any NxN (or NxM?) board
+    cells: [Cell; NUM_CELLS],
 }
 
 impl fmt::Display for Game {
@@ -69,7 +71,7 @@ impl FromStr for Game {
     fn from_str(game_str: &str) -> Result<Self, Self::Err> {
         match game_str {
             "" => Err(Self::Err::Empty),
-            g if g.len() != SIZE => Err(Self::Err::BadLen),
+            g if g.len() != NUM_CELLS => Err(Self::Err::BadLen),
             _ => {
                 let mut game = Game::default();
                 let mut errs: Vec<(usize, char)> = vec![];
