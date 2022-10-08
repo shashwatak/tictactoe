@@ -44,7 +44,7 @@ const SIZE : usize = 9;
 
 #[derive(Debug, Default)]
 struct Game {
-    // we will use iterators to turn these 9 cells into
+    // we will use iterators to turn cells into
     // coherent rows and columns
     cells: [Cell; SIZE],
     // TODO abstract to any NxN (or NxM?) board
