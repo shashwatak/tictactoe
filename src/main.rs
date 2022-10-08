@@ -99,9 +99,9 @@ struct Row {
 }
 
 impl Row {
-    fn new(start: usize) -> Row{
+    fn new() -> Row{
         Row {
-            cell_idx: start,
+            cell_idx: 0,
         }
     }
 }
@@ -190,7 +190,7 @@ mod tests {
     #[test]
     fn test_row_iter() {
         let game = "XOXOXOOXO".to_string().parse::<Game>();
-        let row = Row::new(0);
+        let row = Row::new();
         
     }
 }
