@@ -14,7 +14,7 @@ impl fmt::Display for Cell {
         match self {
             Cell::X => write!(f, "X"),
             Cell::O => write!(f, "O"),
-            Cell::Unmarked => write!(f, " "),
+            Cell::Unmarked => write!(f, "_"),
         }
     }
 }
@@ -94,13 +94,31 @@ impl FromStr for Game {
 }
 
 struct Row<'a> {
-    cell_idx: usize,
+    row_idx: usize,
+    count: usize,
     cells: &'a[Cell; NUM_CELLS],
 }
 
 impl<'a> Row<'a> {
     fn new(cells: &'a [Cell; NUM_CELLS], row_idx: usize) -> Row<'a> {
-        Row { cell_idx: row_idx*NUM_COLS, cells }
+        Row { row_idx, count: 0, cells }
+    }
+}
+
+impl<'a> Iterator for Row<'a> {
+    type Item = &'a Cell;
+    fn next(&mut self) -> Option<Self::Item> {
+        println!("NEXT!");
+        match self.count {
+            idx if idx < (self.row_idx * NUM_COLS) + NUM_COLS =>
+            {
+                let result = &self.cells[self.count];
+                self.count += 1;
+                Some(result)
+            }
+            _ => None,
+
+        }
     }
 }
 
@@ -110,6 +128,9 @@ fn main() {
     game.cells[4] = Cell::O;
     game.cells[8] = Cell::X;
     println!("{}", game);
+    for cell in Row::new(&game.cells, 0) {
+        println!("{}", cell);
+    }
 }
 
 #[cfg(test)]
@@ -184,8 +205,16 @@ mod tests {
 
     #[test]
     fn test_row_iter() {
-        let game = "XOXOXOOXO".to_string().parse::<Game>();
-        assert!(game.is_ok());
-        let row = Row::new(&game.unwrap().cells, 0);
+        let game = "XOXOXOOXO".to_string().parse::<Game>().unwrap();
+        let mut row = Row::new(&game.cells, 0);
+        println!("aaa {:?}", row.next());
+        println!("aaa {:?}", row.next());
+        println!("aaa {:?}", row.next());
+        println!("aaa {:?}", row.next());
+        let mut row = Row::new(&game.cells, 0);
+        assert!(matches!(row.next().unwrap(), Cell::X));
+        assert!(matches!(row.next().unwrap(), Cell::O));
+        assert!(matches!(row.next().unwrap(), Cell::X));
+        assert!(matches!(row.next(), None));
     }
 }
