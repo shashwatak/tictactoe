@@ -93,13 +93,14 @@ impl FromStr for Game {
     }
 }
 
-struct Row {
+struct Row<'a> {
     cell_idx: usize,
+    cells: &'a[Cell; NUM_CELLS],
 }
 
-impl Row {
-    fn new() -> Row {
-        Row { cell_idx: 0 }
+impl<'a> Row<'a> {
+    fn new(cells: &'a [Cell; NUM_CELLS], row_idx: usize) -> Row<'a> {
+        Row { cell_idx: row_idx*NUM_COLS, cells }
     }
 }
 
@@ -184,6 +185,7 @@ mod tests {
     #[test]
     fn test_row_iter() {
         let game = "XOXOXOOXO".to_string().parse::<Game>();
-        let row = Row::new();
+        assert!(game.is_ok());
+        let row = Row::new(&game.unwrap().cells, 0);
     }
 }
