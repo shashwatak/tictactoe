@@ -93,6 +93,7 @@ impl FromStr for Game {
         }
     }
 }
+
 fn main() {
     let mut game = Game::default();
     game.cells[0] = Cell::X;
