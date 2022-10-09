@@ -1,6 +1,3 @@
-// mod cell;
-// mod game;
-
 use crate::cell::Cell;
 use crate::game::{NUM_CELLS, NUM_COLS};
 
