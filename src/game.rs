@@ -22,7 +22,6 @@ impl fmt::Display for Game {
     }
 }
 
-
 #[derive(Debug)]
 pub enum ParseGameError {
     Empty,

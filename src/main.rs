@@ -1,22 +1,20 @@
 mod cell;
 mod game;
 
-
 use crate::cell::Cell;
+use crate::game::{Game, NUM_CELLS, NUM_COLS, NUM_ROWS};
 
-use crate::game::{Game, NUM_ROWS, NUM_COLS, NUM_CELLS};
-
-    fn pretty_print(game : &Game) {
-        println!("   a b c ");
-        println!("  -------");
-        for row_idx in 0..NUM_ROWS {
-            print!("{} |", row_idx + 1);
-            for cell in Row::new(&game.cells, row_idx) {
-                print!("{}|", cell);
-            }
-            println!("\n  -------");
+fn pretty_print(game: &Game) {
+    println!("   a b c ");
+    println!("  -------");
+    for row_idx in 0..NUM_ROWS {
+        print!("{} |", row_idx + 1);
+        for cell in Row::new(&game.cells, row_idx) {
+            print!("{}|", cell);
         }
+        println!("\n  -------");
     }
+}
 
 struct Row<'a> {
     row_idx: usize,
