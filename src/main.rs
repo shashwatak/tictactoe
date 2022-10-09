@@ -60,14 +60,14 @@ impl fmt::Display for Game {
 
 impl Game {
     fn pretty_print(&self) {
-        println!("-------");
+        println!("   a b c ");
+        println!("  -------");
         for row_idx in 0..NUM_ROWS {
-            print!("|");
+            print!("{} |", row_idx + 1);
             for cell in Row::new(&self.cells, row_idx) {
                 print!("{}|", cell);
             }
-            println!("");
-            println!("-------");
+            println!("\n  -------");
         }
     }
 }
@@ -145,7 +145,6 @@ fn main() {
     game.cells[0] = Cell::X;
     game.cells[4] = Cell::O;
     game.cells[8] = Cell::X;
-    println!("{}", game);
     game.pretty_print();
 }
 
