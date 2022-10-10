@@ -1,5 +1,5 @@
 use crate::cell::Cell;
-use crate::game::{NUM_CELLS, NUM_COLS};
+use crate::board::{NUM_CELLS, NUM_COLS};
 
 pub struct RowIter<'a> {
     row_idx: usize,
@@ -38,12 +38,12 @@ impl<'a> Iterator for RowIter<'a> {
 mod tests {
 
     use super::*;
-    use crate::game::Game;
+    use crate::board::Board;
 
     #[test]
     fn test_row_iter() {
-        let game = "XOXOXOOXO".to_string().parse::<Game>().unwrap();
-        let mut row = RowIter::new(&game.cells, 0);
+        let board = "XOXOXOOXO".to_string().parse::<Board>().unwrap();
+        let mut row = RowIter::new(&board.cells, 0);
         assert!(matches!(row.next().unwrap(), Cell::X));
         assert!(matches!(row.next().unwrap(), Cell::O));
         assert!(matches!(row.next().unwrap(), Cell::X));

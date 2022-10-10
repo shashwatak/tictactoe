@@ -1,5 +1,5 @@
 use crate::cell::Cell;
-use crate::game::{NUM_CELLS, NUM_ROWS};
+use crate::board::{NUM_CELLS, NUM_ROWS};
 
 pub struct ColIter<'a> {
     col_idx: usize,
@@ -35,12 +35,12 @@ impl<'a> Iterator for ColIter<'a> {
 mod tests {
 
     use super::*;
-    use crate::game::Game;
+    use crate::board::Board;
 
     #[test]
     fn test_col_iter() {
-        let game = "XOXOXOOXO".to_string().parse::<Game>().unwrap();
-        let mut col = ColIter::new(&game.cells, 0);
+        let board = "XOXOXOOXO".to_string().parse::<Board>().unwrap();
+        let mut col = ColIter::new(&board.cells, 0);
         assert!(matches!(col.next().unwrap(), Cell::X));
         assert!(matches!(col.next().unwrap(), Cell::O));
         assert!(matches!(col.next().unwrap(), Cell::O));

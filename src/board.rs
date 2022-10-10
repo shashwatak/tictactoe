@@ -9,13 +9,13 @@ pub const NUM_ROWS: usize = 3;
 pub const NUM_CELLS: usize = NUM_ROWS * NUM_COLS;
 
 #[derive(Debug, Default)]
-pub struct Game {
+pub struct Board {
     // we will use iterators to turn cells into
     // coherent rows and columns
     pub cells: [Cell; NUM_CELLS],
 }
 
-impl fmt::Display for Game {
+impl fmt::Display for Board {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let out: Vec<String> = self.cells.iter().map(|cell| cell.to_string()).collect();
         write!(f, "{}", out.join(""))
@@ -23,33 +23,33 @@ impl fmt::Display for Game {
 }
 
 #[derive(Debug)]
-pub enum ParseGameError {
+pub enum ParseBoardError {
     Empty,
     BadLen,
     BadChars(Vec<(usize, char)>),
 }
 
-impl FromStr for Game {
-    type Err = ParseGameError;
-    fn from_str(game_str: &str) -> Result<Self, Self::Err> {
-        match game_str {
+impl FromStr for Board {
+    type Err = ParseBoardError;
+    fn from_str(board_str: &str) -> Result<Self, Self::Err> {
+        match board_str {
             "" => Err(Self::Err::Empty),
             g if g.len() != NUM_CELLS => Err(Self::Err::BadLen),
             _ => {
-                let mut game = Game::default();
+                let mut board = Board::default();
                 let mut errs: Vec<(usize, char)> = vec![];
 
-                game_str.chars().enumerate().for_each(|(i, cell_char)| {
+                board_str.chars().enumerate().for_each(|(i, cell_char)| {
                     let cell_maybe = cell_char.to_string().parse::<Cell>();
                     match cell_maybe {
-                        Ok(cell) => game.cells[i] = cell,
+                        Ok(cell) => board.cells[i] = cell,
                         Err(ParseCellError::BadChar(c)) => errs.push((i, c)),
                         _ => panic!("unexpected unknown error"),
                     }
                 });
 
                 match &errs[..] {
-                    [] => Ok(game),
+                    [] => Ok(board),
                     [..] => Err(Self::Err::BadChars(errs)),
                 }
             }
@@ -62,23 +62,23 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_bad_game_to_from_string() {
+    fn test_bad_board_to_from_string() {
         {
-            let game = "".to_string().parse::<Game>();
-            assert!(matches!(game, Err(ParseGameError::Empty)));
+            let board = "".to_string().parse::<Board>();
+            assert!(matches!(board, Err(ParseBoardError::Empty)));
         }
         {
-            let game = "X OOOXXO".to_string().parse::<Game>();
-            assert!(matches!(game, Err(ParseGameError::BadLen)));
+            let board = "X OOOXXO".to_string().parse::<Board>();
+            assert!(matches!(board, Err(ParseBoardError::BadLen)));
         }
         {
-            let game = "XXOOOXXXXO".to_string().parse::<Game>();
-            assert!(matches!(game, Err(ParseGameError::BadLen)));
+            let board = "XXOOOXXXXO".to_string().parse::<Board>();
+            assert!(matches!(board, Err(ParseBoardError::BadLen)));
         }
         {
-            let game = "XXOOODXXO".to_string().parse::<Game>();
-            match game {
-                Err(ParseGameError::BadChars(a)) => match &a[..] {
+            let board = "XXOOODXXO".to_string().parse::<Board>();
+            match board {
+                Err(ParseBoardError::BadChars(a)) => match &a[..] {
                     [(5, 'D')] => assert!(true),
                     _ => assert!(false),
                 },
@@ -88,13 +88,13 @@ mod test {
     }
 
     #[test]
-    fn test_game_to_from_string() {
-        let good_games = ["XOXOXOOXO"];
-        for expected_game in good_games {
-            let game = expected_game.to_string().parse::<Game>();
-            assert!(matches!(game, Ok(_)));
-            let result_game = game.unwrap().to_string();
-            assert_eq!(expected_game, result_game);
+    fn test_board_to_from_string() {
+        let good_boards = ["XOXOXOOXO"];
+        for expected_board in good_boards {
+            let board = expected_board.to_string().parse::<Board>();
+            assert!(matches!(board, Ok(_)));
+            let result_board = board.unwrap().to_string();
+            assert_eq!(expected_board, result_board);
         }
     }
 }
