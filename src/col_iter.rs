@@ -1,5 +1,5 @@
 use crate::cell::Cell;
-use crate::game::{NUM_CELLS, NUM_ROWS, NUM_COLS};
+use crate::game::{NUM_CELLS, NUM_ROWS};
 
 pub struct ColIter<'a> {
     col_idx: usize,

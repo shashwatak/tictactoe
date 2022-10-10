@@ -44,11 +44,6 @@ mod tests {
     fn test_row_iter() {
         let game = "XOXOXOOXO".to_string().parse::<Game>().unwrap();
         let mut row = RowIter::new(&game.cells, 0);
-        println!("aaa {:?}", row.next());
-        println!("aaa {:?}", row.next());
-        println!("aaa {:?}", row.next());
-        println!("aaa {:?}", row.next());
-        let mut row = RowIter::new(&game.cells, 0);
         assert!(matches!(row.next().unwrap(), Cell::X));
         assert!(matches!(row.next().unwrap(), Cell::O));
         assert!(matches!(row.next().unwrap(), Cell::X));

@@ -9,9 +9,12 @@ use crate::col_iter::ColIter;
 use crate::row_iter::RowIter;
 
 fn pretty_print(game: &Game) {
-    println!("Row-wise");
-    println!("   a b c ");
-    println!("  -------");
+    println!("Row Major:");
+    print!("  ");
+    for col_idx in 0..NUM_COLS {
+        print!(" {}", (col_idx + 'a' as usize) as u8 as char);
+    }
+    println!("\n  -------");
     for row_idx in 0..NUM_ROWS {
         print!("{} |", row_idx + 1);
         for cell in RowIter::new(&game.cells, row_idx) {
@@ -20,9 +23,12 @@ fn pretty_print(game: &Game) {
         println!("\n  -------");
     }
 
-    println!("column-wise");
-    println!("   1 2 3 ");
-    println!("  -------");
+    println!("Column Major:");
+    print!("  ");
+    for row_idx in 0..NUM_ROWS {
+        print!(" {}", row_idx + 1);
+    }
+    println!("\n  -------");
     for col_idx in 0..NUM_COLS {
         print!("{} |", (col_idx + 'a' as usize) as u8 as char);
         for cell in ColIter::new(&game.cells, col_idx) {
