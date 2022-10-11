@@ -2,11 +2,13 @@ mod cell;
 mod board;
 mod col_iter;
 mod row_iter;
+mod board_has_win;
 
 use crate::cell::Cell;
 use crate::board::{Board, NUM_ROWS, NUM_COLS};
 use crate::col_iter::ColIter;
 use crate::row_iter::RowIter;
+use crate::board_has_win::board_has_win;
 
 fn pretty_print(board: &Board) {
     println!("Row Major:");
@@ -36,7 +38,7 @@ fn pretty_print(board: &Board) {
         }
         println!("\n  -------");
     }
-
+    println!("is win? {}", board_has_win(board));
 }
 
 fn main() {

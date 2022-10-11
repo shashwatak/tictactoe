@@ -1,7 +1,7 @@
 use core::fmt;
 use std::str::FromStr;
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Copy, Clone, PartialEq, Eq)]
 pub enum Cell {
     #[default]
     Unmarked,
