@@ -2,6 +2,7 @@ mod cell;
 mod board;
 mod col_iter;
 mod row_iter;
+mod board_iterator;
 mod board_has_win;
 
 use crate::cell::Cell;
