@@ -1,11 +1,11 @@
 mod board;
 mod board_has_win;
-mod board_iterator;
+mod cell_iterator;
 mod cell;
 
 use crate::board::{Board, NUM_COLS, NUM_ROWS};
 use crate::board_has_win::board_has_win;
-use crate::board_iterator::{next_col_cell_idx, next_row_cell_idx, BoardIterator};
+use crate::cell_iterator::{next_col_cell_idx, next_row_cell_idx, CellIterator};
 use crate::cell::Cell;
 
 fn pretty_print(board: &Board) {
@@ -17,7 +17,7 @@ fn pretty_print(board: &Board) {
     println!("\n  -------");
     for row_idx in 0..NUM_ROWS {
         print!("{} |", row_idx + 1);
-        let row = BoardIterator::new(&board.cells, row_idx, next_row_cell_idx);
+        let row = CellIterator::new(&board.cells, row_idx, next_row_cell_idx);
         for cell in row {
             print!("{}|", cell);
         }
@@ -32,7 +32,7 @@ fn pretty_print(board: &Board) {
     println!("\n  -------");
     for col_idx in 0..NUM_COLS {
         print!("{} |", (col_idx + 'a' as usize) as u8 as char);
-        let col = BoardIterator::new(&board.cells, col_idx, next_col_cell_idx);
+        let col = CellIterator::new(&board.cells, col_idx, next_col_cell_idx);
         for cell in col {
             print!("{}|", cell);
         }

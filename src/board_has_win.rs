@@ -1,7 +1,7 @@
 use crate::{
     board::{Board, NUM_ROWS},
     cell::Cell,
-    board_iterator::{BoardIterator, next_row_cell_idx},
+    cell_iterator::{CellIterator, next_row_cell_idx},
 };
 
 pub fn board_has_win(board: &Board) -> Cell {
@@ -15,7 +15,7 @@ pub fn board_has_win(board: &Board) -> Cell {
 }
 
 pub fn row_has_win(board: &Board, row_idx: usize) -> Cell {
-    let mut row = BoardIterator::new(&board.cells, row_idx, next_row_cell_idx);
+    let mut row = CellIterator::new(&board.cells, row_idx, next_row_cell_idx);
     let winner = *row.next().unwrap();  
     for cell in row {
         if !matches!(*cell, _winner) {
