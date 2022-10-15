@@ -1,11 +1,11 @@
 use crate::board::{NUM_CELLS, NUM_COLS as ROW_SIZE, NUM_ROWS as COL_SIZE};
 use crate::cell::Cell;
 
-fn next_row_cell_idx(row_idx: usize, count: usize) -> usize {
+pub fn next_row_cell_idx(row_idx: usize, count: usize) -> usize {
     row_idx * ROW_SIZE + count
 }
 
-fn next_col_cell_idx(col_idx: usize, count: usize) -> usize {
+pub fn next_col_cell_idx(col_idx: usize, count: usize) -> usize {
     COL_SIZE * count + col_idx
 }
 
@@ -16,11 +16,12 @@ pub struct BoardIterator<'a, NextCell> {
     next_cell: NextCell,
 }
 
+
 impl<'a, NextCell> BoardIterator<'a, NextCell>
 where
     NextCell: Fn(usize, usize) -> usize,
 {
-    pub fn new(
+   pub fn new(
         cells: &'a [Cell; NUM_CELLS],
         dimension_index: usize,
         next_cell: NextCell,
