@@ -1,12 +1,14 @@
 mod board;
 mod board_has_win;
 mod cell_iterator;
+mod row_iterator;
 mod cell;
 
 use crate::board::{Board, NUM_COLS, NUM_ROWS};
 use crate::board_has_win::board_has_win;
-use crate::cell_iterator::{next_col_cell_idx, next_row_cell_idx, CellIterator};
+use crate::cell_iterator::{next_col_cell_idx, CellIterator};
 use crate::cell::Cell;
+use crate::row_iterator::RowIterator;
 
 fn pretty_print(board: &Board) {
     println!("Row Major:");
@@ -15,9 +17,8 @@ fn pretty_print(board: &Board) {
         print!(" {}", (col_idx + 'a' as usize) as u8 as char);
     }
     println!("\n  -------");
-    for row_idx in 0..NUM_ROWS {
+    for (row_idx, row) in RowIterator::new(&board.cells).enumerate() {
         print!("{} |", row_idx + 1);
-        let row = CellIterator::new(&board.cells, row_idx, next_row_cell_idx);
         for cell in row {
             print!("{}|", cell);
         }

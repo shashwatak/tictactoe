@@ -9,23 +9,20 @@ pub fn next_col_cell_idx(col_idx: usize, count: usize) -> usize {
     COL_SIZE * count + col_idx
 }
 
-pub struct CellIterator<'a, NextCell> {
+pub struct CellIterator<'a> {
     count: usize,
     cells: &'a [Cell; NUM_CELLS],
     dimension_index: usize,
-    next_cell: NextCell,
+    next_cell: fn(usize, usize) -> usize,
 }
 
 
-impl<'a, NextCell> CellIterator<'a, NextCell>
-where
-    NextCell: Fn(usize, usize) -> usize,
-{
+impl<'a> CellIterator<'a> {
    pub fn new(
         cells: &'a [Cell; NUM_CELLS],
         dimension_index: usize,
-        next_cell: NextCell,
-    ) -> CellIterator<'a, NextCell> {
+        next_cell: fn(usize, usize) -> usize,
+    ) -> CellIterator<'a> {
         CellIterator {
             count: 0,
             cells,
@@ -35,10 +32,7 @@ where
     }
 }
 
-impl<'a, NextCell> Iterator for CellIterator<'a, NextCell>
-where
-    NextCell: Fn(usize, usize) -> usize,
-{
+impl<'a> Iterator for CellIterator<'a> {
     type Item = &'a Cell;
     fn next(&mut self) -> Option<Self::Item> {
         if self.count >= ROW_SIZE {
