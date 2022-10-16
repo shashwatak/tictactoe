@@ -4,9 +4,8 @@ mod cell_iterator;
 mod row_iterator;
 mod cell;
 
-use crate::board::{Board, NUM_COLS, NUM_ROWS};
+use crate::board::{Board, NUM_COLS};
 use crate::board_has_win::board_has_win;
-use crate::cell_iterator::{next_col_cell_idx, CellIterator};
 use crate::cell::Cell;
 use crate::row_iterator::RowIterator;
 
@@ -25,20 +24,20 @@ fn pretty_print(board: &Board) {
         println!("\n  -------");
     }
 
-    println!("Column Major:");
-    print!("  ");
-    for row_idx in 0..NUM_ROWS {
-        print!(" {}", row_idx + 1);
-    }
-    println!("\n  -------");
-    for col_idx in 0..NUM_COLS {
-        print!("{} |", (col_idx + 'a' as usize) as u8 as char);
-        let col = CellIterator::new(&board.cells, col_idx, next_col_cell_idx);
-        for cell in col {
-            print!("{}|", cell);
-        }
-        println!("\n  -------");
-    }
+    // println!("Column Major:");
+    // print!("  ");
+    // for row_idx in 0..NUM_ROWS {
+    //     print!(" {}", row_idx + 1);
+    // }
+    // println!("\n  -------");
+    // for col_idx in 0..NUM_COLS {
+    //     print!("{} |", (col_idx + 'a' as usize) as u8 as char);
+    //     let col = CellIterator::new(&board.cells, col_idx, next_col_cell_idx);
+    //     for cell in col {
+    //         print!("{}|", cell);
+    //     }
+    //     println!("\n  -------");
+    // }
     println!("is win? {}", board_has_win(board));
 }
 

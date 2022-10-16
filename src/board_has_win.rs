@@ -1,25 +1,20 @@
-use crate::{
-    board::{Board, NUM_ROWS},
-    cell::Cell,
-    cell_iterator::{CellIterator, next_row_cell_idx},
-};
+use crate::{board::Board, cell::Cell, cell_iterator::CellIterator, row_iterator::RowIterator};
 
 pub fn board_has_win(board: &Board) -> Cell {
-    for row_idx in 0..NUM_ROWS {
-        let cell = row_has_win(board, row_idx);
-        if ! matches!(cell, Cell::Unmarked) {
+    for row in RowIterator::new(&board.cells) {
+        let cell = row_has_win(row);
+        if !matches!(cell, Cell::Unmarked) {
             return cell;
         }
     }
     Cell::Unmarked
 }
 
-pub fn row_has_win(board: &Board, row_idx: usize) -> Cell {
-    let mut row = CellIterator::new(&board.cells, row_idx, next_row_cell_idx);
-    let winner = *row.next().unwrap();  
-    for cell in row {
+pub fn row_has_win(mut iter: CellIterator) -> Cell {
+    let winner = *iter.next().unwrap();
+    for cell in iter {
         if !matches!(*cell, _winner) {
-             return Cell::Unmarked;
+            return Cell::Unmarked;
         }
     }
     winner

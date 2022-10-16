@@ -1,13 +1,5 @@
-use crate::board::{NUM_CELLS, NUM_COLS as ROW_SIZE, NUM_ROWS as COL_SIZE};
+use crate::board::{NUM_CELLS, NUM_COLS as ROW_SIZE};
 use crate::cell::Cell;
-
-pub fn next_row_cell_idx(row_idx: usize, count: usize) -> usize {
-    row_idx * ROW_SIZE + count
-}
-
-pub fn next_col_cell_idx(col_idx: usize, count: usize) -> usize {
-    COL_SIZE * count + col_idx
-}
 
 pub struct CellIterator<'a> {
     count: usize,
@@ -16,9 +8,8 @@ pub struct CellIterator<'a> {
     next_cell: fn(usize, usize) -> usize,
 }
 
-
 impl<'a> CellIterator<'a> {
-   pub fn new(
+    pub fn new(
         cells: &'a [Cell; NUM_CELLS],
         dimension_index: usize,
         next_cell: fn(usize, usize) -> usize,
@@ -55,41 +46,14 @@ mod tests {
     #[test]
     fn test_board_iter() {
         let board = "XOXOXOXXO".to_string().parse::<Board>().unwrap();
+        fn next_cell_idx(_: usize, count: usize) -> usize {
+            count
+        }
 
-        let mut board = CellIterator::new(&board.cells, 0, next_row_cell_idx);
+        let mut board = CellIterator::new(&board.cells, 0, next_cell_idx);
         assert!(matches!(board.next().unwrap(), Cell::X));
         assert!(matches!(board.next().unwrap(), Cell::O));
         assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next(), None));
-
-        let mut board = CellIterator::new(&board.cells, 1, next_row_cell_idx);
-        assert!(matches!(board.next().unwrap(), Cell::O));
-        assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next().unwrap(), Cell::O));
-        assert!(matches!(board.next(), None));
-
-        let mut board = CellIterator::new(&board.cells, 2, next_row_cell_idx);
-        assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next().unwrap(), Cell::O));
-        assert!(matches!(board.next(), None));
-
-        let mut board = CellIterator::new(&board.cells, 0, next_col_cell_idx);
-        assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next().unwrap(), Cell::O));
-        assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next(), None));
-
-        let mut board = CellIterator::new(&board.cells, 1, next_col_cell_idx);
-        assert!(matches!(board.next().unwrap(), Cell::O));
-        assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next(), None));
-
-        let mut board = CellIterator::new(&board.cells, 2, next_col_cell_idx);
-        assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next().unwrap(), Cell::O));
-        assert!(matches!(board.next().unwrap(), Cell::O));
         assert!(matches!(board.next(), None));
     }
 }
