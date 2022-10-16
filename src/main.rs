@@ -4,10 +4,10 @@ mod cell;
 mod cell_iterator;
 mod column_iterator;
 mod row_iterator;
+mod diagonal_iterator;
 
 use crate::board::{Board, NUM_COLS, NUM_ROWS};
 use crate::board_has_win::board_has_win;
-use crate::cell::Cell;
 use crate::column_iterator::ColumnIterator;
 use crate::row_iterator::RowIterator;
 
@@ -43,9 +43,6 @@ fn pretty_print(board: &Board) {
 }
 
 fn main() {
-    let mut board = Board::default();
-    board.cells[0] = Cell::X;
-    board.cells[5] = Cell::O;
-    board.cells[8] = Cell::X;
+    let board = "X O X O X".to_string().parse::<Board>().unwrap();
     pretty_print(&board);
 }

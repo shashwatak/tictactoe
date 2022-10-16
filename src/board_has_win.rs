@@ -1,4 +1,4 @@
-use crate::{board::Board, cell::Cell, cell_iterator::CellIterator, row_iterator::RowIterator, column_iterator::ColumnIterator};
+use crate::{board::Board, cell::Cell, cell_iterator::CellIterator, row_iterator::RowIterator, column_iterator::ColumnIterator, diagonal_iterator::DiagonalIterator};
 
 pub fn board_has_win(board: &Board) -> Cell {
     for row in RowIterator::new(&board.cells) {
@@ -8,6 +8,12 @@ pub fn board_has_win(board: &Board) -> Cell {
         }
     }
     for column in ColumnIterator::new(&board.cells) {
+        let cell = iter_has_win(column);
+        if !matches!(cell, Cell::Unmarked) {
+            return cell;
+        }
+    }
+    for column in DiagonalIterator::new(&board.cells) {
         let cell = iter_has_win(column);
         if !matches!(cell, Cell::Unmarked) {
             return cell;
@@ -45,7 +51,7 @@ mod tests {
         let board = "         ".to_string().parse::<Board>().unwrap();
         let cell = board_has_win(&board);
         assert!(matches!(cell, Cell::Unmarked));
-        let board = "XXOOXXOOX".to_string().parse::<Board>().unwrap();
+        let board = "XOXOXOOXO".to_string().parse::<Board>().unwrap();
         let cell = board_has_win(&board);
         assert!(matches!(cell, Cell::Unmarked));
     }
