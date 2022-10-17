@@ -2,17 +2,17 @@ use crate::{board::Board, cell::Cell, cell_iterator::CellIterator};
 
 pub fn board_has_win(board: &Board) -> Cell {
     let mut potential_winner = Cell::Unmarked;
-    board.rows().map(|cells| iter_has_win(cells)).for_each(|cell| {
+    board.rows().map(iter_has_win).for_each(|cell| {
         if let Cell::X | Cell::O = cell {
             potential_winner = cell;
         }
     });
-    board.columns().map(|cells| iter_has_win(cells)).for_each(|cell| {
+    board.columns().map(iter_has_win).for_each(|cell| {
         if let Cell::X | Cell::O = cell {
             potential_winner = cell;
         }
     });
-    board.diagonals().map(|cells| iter_has_win(cells)).for_each(|cell| {
+    board.diagonals().map(iter_has_win).for_each(|cell| {
         if let Cell::X | Cell::O = cell {
             potential_winner = cell;
         }
