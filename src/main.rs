@@ -43,6 +43,6 @@ fn pretty_print(board: &Board) {
 }
 
 fn main() {
-    let board = "X O X O X".to_string().parse::<Board>().unwrap();
+    let board = "X O XOO X".to_string().parse::<Board>().unwrap();
     pretty_print(&board);
 }
