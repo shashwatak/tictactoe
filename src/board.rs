@@ -27,6 +27,8 @@ pub enum ParseBoardError {
     Empty,
     BadLen,
     BadChars(Vec<(usize, char)>),
+    TooManyXs,
+    TooManyOs,
 }
 
 impl FromStr for Board {
@@ -37,17 +39,30 @@ impl FromStr for Board {
             g if g.len() != NUM_CELLS => Err(Self::Err::BadLen),
             _ => {
                 let mut board = Board::default();
+                let mut xs: Vec<usize> = vec!();
+                let mut os: Vec<usize> = vec!(); 
                 let mut errs: Vec<(usize, char)> = vec![];
 
                 board_str.chars().enumerate().for_each(|(i, cell_char)| {
                     let cell_maybe = cell_char.to_string().parse::<Cell>();
                     match cell_maybe {
-                        Ok(cell) => board.cells[i] = cell,
+                        Ok(cell) => {
+                            board.cells[i] = cell;
+                            match cell {
+                                Cell::X => xs.push(i),
+                                Cell::O => os.push(i),
+                                _ => (),
+                            }
+                        },
                         Err(ParseCellError::BadChar(c)) => errs.push((i, c)),
                         _ => panic!("unexpected unknown error"),
                     }
                 });
-
+                if xs.len() > os.len() + 1 {
+                     return Err(Self::Err::TooManyXs);
+                } else if os.len() > xs.len() {
+                     return Err(Self::Err::TooManyOs);
+                }
                 match &errs[..] {
                     [] => Ok(board),
                     [..] => Err(Self::Err::BadChars(errs)),
@@ -85,11 +100,19 @@ mod test {
                 _ => assert!(false),
             }
         }
+        {
+            let board = "XXOOOXXXX".to_string().parse::<Board>();
+            assert!(matches!(board, Err(ParseBoardError::TooManyXs)));
+        }
+        {
+            let board = "XXOOOXXOO".to_string().parse::<Board>();
+            assert!(matches!(board, Err(ParseBoardError::TooManyOs)));
+        }
     }
 
     #[test]
     fn test_board_to_from_string() {
-        let good_boards = ["XOXOXOOXO"];
+        let good_boards = ["XOXXOXOXO"];
         for expected_board in good_boards {
             let board = expected_board.to_string().parse::<Board>();
             assert!(matches!(board, Ok(_)));

@@ -40,9 +40,9 @@ mod tests {
 
     #[test]
     fn test_board_with_win() {
-        let board = "OOOXXOXXO".to_string().parse::<Board>().unwrap();
-        assert!(matches!(board_has_win(&board), Cell::O));
-        let board = "OOO    XX".to_string().parse::<Board>().unwrap();
+        let board = "XOOXXOXXO".to_string().parse::<Board>().unwrap();
+        assert!(matches!(board_has_win(&board), Cell::X));
+        let board = "OOO XX X ".to_string().parse::<Board>().unwrap();
         assert!(matches!(board_has_win(&board), Cell::O));
     }
 
@@ -51,7 +51,7 @@ mod tests {
         let board = "         ".to_string().parse::<Board>().unwrap();
         let cell = board_has_win(&board);
         assert!(matches!(cell, Cell::Unmarked));
-        let board = "XOXOXOOXO".to_string().parse::<Board>().unwrap();
+        let board = "XOXXOXOXO".to_string().parse::<Board>().unwrap();
         let cell = board_has_win(&board);
         assert!(matches!(cell, Cell::Unmarked));
     }
