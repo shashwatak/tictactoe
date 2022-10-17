@@ -1,4 +1,4 @@
-use crate::board::{NUM_CELLS, NUM_ROWS as COL_SIZE};
+use crate::board::{Board, NUM_CELLS, NUM_ROWS as COL_SIZE};
 use crate::cell::Cell;
 use crate::cell_iterator::CellIterator;
 
@@ -28,6 +28,11 @@ impl<'a> Iterator for ColumnIterator<'a> {
     }
 }
 
+impl Board {
+    pub fn columns(&self) -> ColumnIterator{
+        ColumnIterator::new(&self.cells)
+    }
+}
 #[cfg(test)]
 mod tests {
 
@@ -38,7 +43,7 @@ mod tests {
     fn test_column_iterator() {
         let board = "XOXOXOXXO".to_string().parse::<Board>().unwrap();
 
-        let mut columns = ColumnIterator::new(&board.cells);
+        let mut columns = board.columns();
 
         let mut column = columns.next().unwrap();
         assert!(matches!(column.next().unwrap(), Cell::X));

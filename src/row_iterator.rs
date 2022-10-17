@@ -32,6 +32,7 @@ impl Board {
         RowIterator::new(&self.cells)
     }
 }
+
 #[cfg(test)]
 mod tests {
 
