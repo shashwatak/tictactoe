@@ -1,25 +1,23 @@
 use crate::{board::Board, cell::Cell, cell_iterator::CellIterator};
 
 pub fn board_has_win(board: &Board) -> Cell {
-    for row in board.rows() {
-        let cell = iter_has_win(row);
-        if !matches!(cell, Cell::Unmarked) {
-            return cell;
+    let mut potential_winner = Cell::Unmarked;
+    board.rows().map(|cells| iter_has_win(cells)).for_each(|cell| {
+        if let Cell::X | Cell::O = cell {
+            potential_winner = cell;
         }
-    }
-    for column in board.columns() {
-        let cell = iter_has_win(column);
-        if !matches!(cell, Cell::Unmarked) {
-            return cell;
+    });
+    board.columns().map(|cells| iter_has_win(cells)).for_each(|cell| {
+        if let Cell::X | Cell::O = cell {
+            potential_winner = cell;
         }
-    }
-    for column in board.diagonals() {
-        let cell = iter_has_win(column);
-        if !matches!(cell, Cell::Unmarked) {
-            return cell;
+    });
+    board.diagonals().map(|cells| iter_has_win(cells)).for_each(|cell| {
+        if let Cell::X | Cell::O = cell {
+            potential_winner = cell;
         }
-    }
-    Cell::Unmarked
+    });
+    potential_winner
 }
 
 pub fn iter_has_win(mut iter: CellIterator) -> Cell {
@@ -40,7 +38,7 @@ mod tests {
 
     #[test]
     fn test_board_with_win() {
-        let board = "XOOXXOXXO".to_string().parse::<Board>().unwrap();
+        let board = "XOOX OXX ".to_string().parse::<Board>().unwrap();
         assert!(matches!(board_has_win(&board), Cell::X));
         let board = "OOO XX X ".to_string().parse::<Board>().unwrap();
         assert!(matches!(board_has_win(&board), Cell::O));
