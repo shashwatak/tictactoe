@@ -1,19 +1,19 @@
-use crate::{board::Board, cell::Cell, cell_iterator::CellIterator, row_iterator::RowIterator, column_iterator::ColumnIterator, diagonal_iterator::DiagonalIterator};
+use crate::{board::Board, cell::Cell, cell_iterator::CellIterator};
 
 pub fn board_has_win(board: &Board) -> Cell {
-    for row in RowIterator::new(&board.cells) {
+    for row in board.rows() {
         let cell = iter_has_win(row);
         if !matches!(cell, Cell::Unmarked) {
             return cell;
         }
     }
-    for column in ColumnIterator::new(&board.cells) {
+    for column in board.columns() {
         let cell = iter_has_win(column);
         if !matches!(cell, Cell::Unmarked) {
             return cell;
         }
     }
-    for column in DiagonalIterator::new(&board.cells) {
+    for column in board.diagonals() {
         let cell = iter_has_win(column);
         if !matches!(cell, Cell::Unmarked) {
             return cell;

@@ -29,7 +29,7 @@ impl<'a> Iterator for ColumnIterator<'a> {
 }
 
 impl Board {
-    pub fn columns(&self) -> ColumnIterator{
+    pub fn columns(&self) -> ColumnIterator {
         ColumnIterator::new(&self.cells)
     }
 }

@@ -28,7 +28,7 @@ impl<'a> Iterator for RowIterator<'a> {
 }
 
 impl Board {
-    pub fn rows(&self) -> RowIterator{
+    pub fn rows(&self) -> RowIterator {
         RowIterator::new(&self.cells)
     }
 }

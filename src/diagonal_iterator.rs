@@ -1,4 +1,4 @@
-use crate::board::{NUM_CELLS, NUM_ROWS as COL_SIZE};
+use crate::board::{Board, NUM_CELLS, NUM_ROWS as COL_SIZE};
 use crate::cell::Cell;
 use crate::cell_iterator::CellIterator;
 
@@ -30,6 +30,12 @@ impl<'a> Iterator for DiagonalIterator<'a> {
         } else {
             None
         }
+    }
+}
+
+impl Board {
+    pub fn diagonals(&self) -> DiagonalIterator {
+        DiagonalIterator::new(&self.cells)
     }
 }
 
