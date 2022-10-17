@@ -9,7 +9,6 @@ mod diagonal_iterator;
 use crate::board::{Board, NUM_COLS, NUM_ROWS};
 use crate::board_has_win::board_has_win;
 use crate::column_iterator::ColumnIterator;
-use crate::row_iterator::RowIterator;
 
 fn pretty_print(board: &Board) {
     println!("Row Major:");
@@ -18,7 +17,7 @@ fn pretty_print(board: &Board) {
         print!(" {}", (column_idx + 'a' as usize) as u8 as char);
     }
     println!("\n  -------");
-    for (row_idx, row) in RowIterator::new(&board.cells).enumerate() {
+    for (row_idx, row) in board.rows().enumerate() {
         print!("{} |", row_idx + 1);
         for cell in row {
             print!("{}|", cell);
