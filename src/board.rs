@@ -91,6 +91,10 @@ mod test {
                 _ => assert!(false),
             }
         }
+        {
+            let board = "XXOOOXXOO".to_string().parse::<Board>();
+            assert!(matches!(board, Err(ParseBoardError::ImpossibleCells(_))));
+        }
     }
 
     #[test]
