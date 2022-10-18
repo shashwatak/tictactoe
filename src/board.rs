@@ -3,6 +3,7 @@ use std::str::FromStr;
 
 use crate::cell::Cell;
 use crate::cell::ParseCellError;
+use crate::cells_are_valid::{cells_are_valid, CellsImpossibleError};
 
 pub const NUM_COLS: usize = 3;
 pub const NUM_ROWS: usize = 3;
@@ -27,8 +28,7 @@ pub enum ParseBoardError {
     Empty,
     BadLen,
     BadChars(Vec<(usize, char)>),
-    TooManyXs,
-    TooManyOs,
+    ImpossibleCells(CellsImpossibleError),
 }
 
 impl FromStr for Board {
@@ -38,34 +38,25 @@ impl FromStr for Board {
             "" => Err(Self::Err::Empty),
             g if g.len() != NUM_CELLS => Err(Self::Err::BadLen),
             _ => {
-                let mut board = Board::default();
-                let mut xs: Vec<usize> = vec!();
-                let mut os: Vec<usize> = vec!(); 
-                let mut errs: Vec<(usize, char)> = vec![];
+                let mut cells: [Cell; NUM_CELLS] = [Cell::Unmarked; NUM_CELLS];
+                let mut char_errs: Vec<(usize, char)> = vec![];
 
                 board_str.chars().enumerate().for_each(|(i, cell_char)| {
                     let cell_maybe = cell_char.to_string().parse::<Cell>();
                     match cell_maybe {
                         Ok(cell) => {
-                            board.cells[i] = cell;
-                            match cell {
-                                Cell::X => xs.push(i),
-                                Cell::O => os.push(i),
-                                _ => (),
-                            }
+                            cells[i] = cell;
                         },
-                        Err(ParseCellError::BadChar(c)) => errs.push((i, c)),
+                        Err(ParseCellError::BadChar(c)) => char_errs.push((i, c)),
                         _ => panic!("unexpected unknown error"),
                     }
                 });
-                if xs.len() > os.len() + 1 {
-                     return Err(Self::Err::TooManyXs);
-                } else if os.len() > xs.len() {
-                     return Err(Self::Err::TooManyOs);
-                }
-                match &errs[..] {
-                    [] => Ok(board),
-                    [..] => Err(Self::Err::BadChars(errs)),
+                match &char_errs[..] {
+                    [] => match cells_are_valid(&cells) {
+                        Ok(_) => Ok(Board {cells}),
+                        Err(err) => Err(Self::Err::ImpossibleCells(err)),
+                    },
+                    [..] => Err(Self::Err::BadChars(char_errs)),
                 }
             }
         }
@@ -99,14 +90,6 @@ mod test {
                 },
                 _ => assert!(false),
             }
-        }
-        {
-            let board = "XXOOOXXXX".to_string().parse::<Board>();
-            assert!(matches!(board, Err(ParseBoardError::TooManyXs)));
-        }
-        {
-            let board = "XXOOOXXOO".to_string().parse::<Board>();
-            assert!(matches!(board, Err(ParseBoardError::TooManyOs)));
         }
     }
 
