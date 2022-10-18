@@ -1,4 +1,5 @@
 mod board;
+mod cells_are_valid;
 mod board_has_win;
 mod cell;
 mod cell_iterator;
