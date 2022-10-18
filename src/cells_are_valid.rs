@@ -2,14 +2,15 @@ use crate::board::NUM_CELLS;
 use crate::board_has_win::iter_has_win;
 use crate::cell::Cell;
 use crate::column_iterator::ColumnIterator;
+use crate::diagonal_iterator::DiagonalIterator;
 use crate::row_iterator::RowIterator;
 
+#[derive(Debug)]
 pub enum CellsImpossibleError {
     TooManyXs,
     TooManyOs,
     XPlayAfterOWin,
     OPlayAfterXWin,
-    BothWin,
 }
 
 fn count_xs_and_os(cells: &[Cell; NUM_CELLS]) -> (usize, usize) {
@@ -32,8 +33,27 @@ pub fn cells_are_valid(cells: &[Cell; NUM_CELLS]) -> Result<(), CellsImpossibleE
     } else if num_os > num_xs {
         return Err(CellsImpossibleError::TooManyOs);
     }
-    for row in RowIterator::new(cells) {
-        iter_has_win(row);
+    let mut x_win = false;
+    let mut o_win = false;
+
+    let tracks = RowIterator::new(cells)
+        .chain(ColumnIterator::new(cells))
+        .chain(DiagonalIterator::new(cells));
+    for track in tracks {
+        let cell = iter_has_win(track);
+        if let Cell::X = cell {
+            x_win = true;
+        }
+        if let Cell::O = cell {
+            o_win = true;
+        }
+    }
+
+    if x_win && num_os == num_xs {
+        return Err(CellsImpossibleError::OPlayAfterXWin);
+    }
+    if o_win && num_xs == num_os + 1 {
+        return Err(CellsImpossibleError::XPlayAfterOWin);
     }
     Ok(())
 }
@@ -42,7 +62,6 @@ pub fn cells_are_valid(cells: &[Cell; NUM_CELLS]) -> Result<(), CellsImpossibleE
 mod tests {
 
     use super::*;
-    use crate::board::Board;
 
     fn make_cells(cells_str: &str) -> [Cell; NUM_CELLS] {
         assert_eq!(cells_str.len(), NUM_CELLS);
@@ -105,7 +124,7 @@ mod tests {
             make_cells("XXXOOO   "),
             make_cells("XO XO XO "),
             make_cells("XXXOO O  "),
-            make_cells("XO OXO OX"),
+            make_cells("XO OXO  X"),
         ];
         for cells in o_play_after_x_win {
             assert!(matches!(
@@ -115,9 +134,9 @@ mod tests {
         }
 
         let x_play_after_o_win = [
-            make_cells("OOOXXX   "),
-            make_cells("OX OX OX "),
-            make_cells("OOOXX X  "),
+            make_cells("OOOXX XX "),
+            make_cells("OXXOX O X"),
+            make_cells("OOOXXXX  "),
             make_cells("OX XOX XO"),
         ];
         for cells in x_play_after_o_win {
@@ -127,17 +146,5 @@ mod tests {
             ));
         }
 
-        let both_win = [
-            make_cells("XXXOOO   "),
-            make_cells("OOO   XXX"),
-            make_cells("XO XO XO "),
-            make_cells("O XO XO X"),
-        ];
-        for cells in both_win {
-            assert!(matches!(
-                cells_are_valid(&cells),
-                Err(CellsImpossibleError::BothWin)
-            ));
-        }
     }
 }
