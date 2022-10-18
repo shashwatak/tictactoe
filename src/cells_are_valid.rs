@@ -13,14 +13,23 @@ pub enum CellsImpossibleError {
 }
 
 fn count_xs_and_os(cells: &[Cell; NUM_CELLS]) -> (usize, usize) {
-    (0, 0)
+    let mut num_xs: usize = 0;
+    let mut num_os: usize = 0;
+    for cell in cells {
+        match cell {
+            Cell::X => num_xs += 1,
+            Cell::O => num_os += 1,
+            _ => (),
+        }
+    }
+    (num_xs, num_os)
 }
 
 pub fn cells_are_valid(cells: &[Cell; NUM_CELLS]) -> Result<(), CellsImpossibleError> {
-    let (xs, os) = count_xs_and_os(cells);
-    if xs > os + 1 {
+    let (num_xs, num_os) = count_xs_and_os(cells);
+    if num_xs > num_os + 1 {
         return Err(CellsImpossibleError::TooManyXs);
-    } else if os > xs {
+    } else if num_os > num_xs {
         return Err(CellsImpossibleError::TooManyOs);
     }
     for row in RowIterator::new(cells) {
@@ -54,13 +63,13 @@ mod tests {
     fn test_cells_are_possible() {
         let cells = make_cells("         ");
         assert!(matches!(cells_are_valid(&cells), Ok(_)));
-        let cells = make_cells("O        ");
+        let cells = make_cells("X        ");
         assert!(matches!(cells_are_valid(&cells), Ok(_)));
-        let cells = make_cells("      X  ");
+        let cells = make_cells("O     X  ");
         assert!(matches!(cells_are_valid(&cells), Ok(_)));
         let cells = make_cells("XOXXOXOXO");
         assert!(matches!(cells_are_valid(&cells), Ok(_)));
-        let cells = make_cells("XOXOXOXOO");
+        let cells = make_cells(" OX X XO ");
         assert!(matches!(cells_are_valid(&cells), Ok(_)));
         let cells = make_cells("OXOXOXOX ");
         assert!(matches!(cells_are_valid(&cells), Ok(_)));
@@ -68,7 +77,6 @@ mod tests {
 
     #[test]
     fn test_cells_are_illogical() {
-
         let too_many_xs = [
             make_cells("XX       "),
             make_cells("XX OO XX "),
@@ -105,7 +113,7 @@ mod tests {
                 Err(CellsImpossibleError::OPlayAfterXWin)
             ));
         }
-        
+
         let x_play_after_o_win = [
             make_cells("OOOXXX   "),
             make_cells("OX OX OX "),
