@@ -17,21 +17,6 @@ impl Game {
             num_cells_played: 0,
         }
     }
-
-    pub fn print(&self) {
-        print!("  ");
-        for column_idx in 0..NUM_COLS {
-            print!(" {}", (column_idx + 'a' as usize) as u8 as char);
-        }
-        println!("\n  -------");
-        for (row_idx, row) in self.board.rows().enumerate() {
-            print!("{} |", row_idx + 1);
-            for cell in row {
-                print!("{}|", cell);
-            }
-            println!("\n  -------");
-        }
-    }
 }
 
 
