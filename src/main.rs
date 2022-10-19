@@ -12,6 +12,5 @@ mod row_iterator;
 use crate::game::Game;
 
 fn main() {
-    let game = Game::new();
-    print!("{}", game);
+    let game = Game::new().run();
 }

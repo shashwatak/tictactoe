@@ -1,4 +1,6 @@
-use crate::board::{Board, NUM_COLS};
+use crate::board::{Board, NUM_CELLS, NUM_COLS};
+use crate::board_has_win::board_has_win;
+use crate::cell::Cell;
 use crate::player::Player;
 use core::fmt;
 
@@ -17,17 +19,34 @@ impl Game {
             num_cells_played: 0,
         }
     }
+
+    pub fn run(&self) {
+        loop {
+            print!("{}", self);
+            let winner = board_has_win(&self.board);
+            if let Cell::Unmarked = winner {
+                println!("Winner! {}", winner);
+                break;
+            }
+            if self.num_cells_played >= NUM_CELLS {
+                println!("Draw.");
+                break;
+            }
+            let mut line = String::new();
+            let input = std::io::stdin().read_line(&mut line).unwrap();
+            println!("you said: {}", input);
+        }
+    }
 }
-
-
 
 impl fmt::Display for Game {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut out : Vec<String> = Vec::new(); 
+        let mut out: Vec<String> = Vec::new();
         out.push("  ".to_string());
         for column_idx in 0..NUM_COLS {
             out.push(format!(" {}", (column_idx + 'a' as usize) as u8 as char));
         }
+    
         out.push("\n  -------\n".to_string());
         for (row_idx, row) in self.board.rows().enumerate() {
             out.push(format!("{} |", row_idx + 1));
@@ -36,6 +55,7 @@ impl fmt::Display for Game {
             }
             out.push("\n  -------\n".to_string());
         }
+       
         out.push(format!("Next Turn: {}\n", self.player));
         write!(f, "{}", out.join(""))
     }
