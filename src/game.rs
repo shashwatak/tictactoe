@@ -24,8 +24,8 @@ impl Game {
         loop {
             print!("{}", self);
             let winner = board_has_win(&self.board);
-            if let Cell::Unmarked = winner {
-                println!("Winner! {}", winner);
+            if let Cell::Player(p) = winner {
+                println!("Winner! {}", p);
                 break;
             }
             if self.num_cells_played >= NUM_CELLS {
@@ -46,7 +46,7 @@ impl fmt::Display for Game {
         for column_idx in 0..NUM_COLS {
             out.push(format!(" {}", (column_idx + 'a' as usize) as u8 as char));
         }
-    
+
         out.push("\n  -------\n".to_string());
         for (row_idx, row) in self.board.rows().enumerate() {
             out.push(format!("{} |", row_idx + 1));
@@ -55,7 +55,7 @@ impl fmt::Display for Game {
             }
             out.push("\n  -------\n".to_string());
         }
-       
+
         out.push(format!("Next Turn: {}\n", self.player));
         write!(f, "{}", out.join(""))
     }
