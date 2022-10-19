@@ -7,10 +7,12 @@ mod column_iterator;
 mod diagonal_iterator;
 mod game;
 mod player;
+mod user_input;
 mod row_iterator;
 
 use crate::game::Game;
 
 fn main() {
-    let game = Game::new().run();
+    Game::new().run();
 }
+
