@@ -9,7 +9,11 @@ pub struct CellId {
     pub column: usize,
 }
 
-
+impl CellId {
+    pub fn to_idx(&self) -> usize {
+        self.row * NUM_COLS + self.column
+    }
+}
 
 #[derive(Debug)]
 pub enum CellIdError {
@@ -94,5 +98,19 @@ mod test {
         let result: CellId = input.parse().unwrap();
         assert_eq!(result.row, 0);
         assert_eq!(result.column, 2);
+    }
+
+    #[test]
+    fn test_to_idx() {
+        let cell_idx = "a1".to_string().parse::<CellId>().unwrap().to_idx();
+        assert_eq!(cell_idx, 0);
+        let cell_idx = "a3".to_string().parse::<CellId>().unwrap().to_idx();
+        assert_eq!(cell_idx, 6);
+        let cell_idx = "b2".to_string().parse::<CellId>().unwrap().to_idx();
+        assert_eq!(cell_idx, 4);
+        let cell_idx = "c1".to_string().parse::<CellId>().unwrap().to_idx();
+        assert_eq!(cell_idx, 2);
+        let cell_idx = "c3".to_string().parse::<CellId>().unwrap().to_idx();
+        assert_eq!(cell_idx, 8);
     }
 }
