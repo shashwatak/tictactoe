@@ -36,6 +36,7 @@ impl fmt::Display for Game {
             }
             out.push("\n  -------\n".to_string());
         }
+        out.push(format!("Next Turn: {}\n", self.player));
         write!(f, "{}", out.join(""))
     }
 }
