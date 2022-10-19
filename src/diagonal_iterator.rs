@@ -9,7 +9,10 @@ pub struct DiagonalIterator<'a> {
 
 impl<'a> DiagonalIterator<'a> {
     pub fn new(cells: &'a [Cell; NUM_CELLS]) -> DiagonalIterator<'a> {
-        DiagonalIterator { diagonal_idx: 0, cells }
+        DiagonalIterator {
+            diagonal_idx: 0,
+            cells,
+        }
     }
 }
 
@@ -18,13 +21,15 @@ impl<'a> Iterator for DiagonalIterator<'a> {
     fn next(&mut self) -> Option<Self::Item> {
         if self.diagonal_idx == 0 {
             let increasing_diagonal = |_: usize, count: usize| count + (COL_SIZE * count);
-            let diagonal_iterator = CellIterator::new(self.cells, self.diagonal_idx, increasing_diagonal);
+            let diagonal_iterator =
+                CellIterator::new(self.cells, self.diagonal_idx, increasing_diagonal);
             self.diagonal_idx += 1;
             Some(diagonal_iterator)
         } else if self.diagonal_idx == 1 {
             let decreasing_diagonal =
                 |_: usize, count: usize| (COL_SIZE - count - 1) + (COL_SIZE * count);
-            let diagonal_iterator = CellIterator::new(self.cells, self.diagonal_idx, decreasing_diagonal);
+            let diagonal_iterator =
+                CellIterator::new(self.cells, self.diagonal_idx, decreasing_diagonal);
             self.diagonal_idx += 1;
             Some(diagonal_iterator)
         } else {
@@ -44,6 +49,7 @@ mod tests {
 
     use super::*;
     use crate::board::Board;
+    use crate::player::Player;
 
     #[test]
     fn test_diagonal_iterator() {
@@ -52,15 +58,15 @@ mod tests {
         let mut diagonals = DiagonalIterator::new(&board.cells);
 
         let mut diagonal = diagonals.next().unwrap();
-        assert!(matches!(diagonal.next().unwrap(), Cell::X));
-        assert!(matches!(diagonal.next().unwrap(), Cell::X));
-        assert!(matches!(diagonal.next().unwrap(), Cell::X));
+        assert!(matches!(diagonal.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(diagonal.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(diagonal.next().unwrap(), Cell::Player(Player::X)));
         assert!(matches!(diagonal.next(), None));
 
         let mut diagonal = diagonals.next().unwrap();
-        assert!(matches!(diagonal.next().unwrap(), Cell::O));
-        assert!(matches!(diagonal.next().unwrap(), Cell::X));
-        assert!(matches!(diagonal.next().unwrap(), Cell::O));
+        assert!(matches!(diagonal.next().unwrap(), Cell::Player(Player::O)));
+        assert!(matches!(diagonal.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(diagonal.next().unwrap(), Cell::Player(Player::O)));
         assert!(matches!(diagonal.next(), None));
     }
 }

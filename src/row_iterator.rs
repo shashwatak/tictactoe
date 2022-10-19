@@ -38,6 +38,7 @@ mod tests {
 
     use super::*;
     use crate::board::Board;
+    use crate::player::Player;
 
     #[test]
     fn test_row_iterator() {
@@ -46,21 +47,21 @@ mod tests {
         let mut rows = board.rows();
 
         let mut row = rows.next().unwrap();
-        assert!(matches!(row.next().unwrap(), Cell::X));
-        assert!(matches!(row.next().unwrap(), Cell::O));
-        assert!(matches!(row.next().unwrap(), Cell::X));
+        assert!(matches!(row.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(row.next().unwrap(), Cell::Player(Player::O)));
+        assert!(matches!(row.next().unwrap(), Cell::Player(Player::X)));
         assert!(matches!(row.next(), None));
 
         let mut row = rows.next().unwrap();
-        assert!(matches!(row.next().unwrap(), Cell::O));
-        assert!(matches!(row.next().unwrap(), Cell::X));
-        assert!(matches!(row.next().unwrap(), Cell::O));
+        assert!(matches!(row.next().unwrap(), Cell::Player(Player::O)));
+        assert!(matches!(row.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(row.next().unwrap(), Cell::Player(Player::O)));
         assert!(matches!(row.next(), None));
 
         let mut row = rows.next().unwrap();
-        assert!(matches!(row.next().unwrap(), Cell::X));
-        assert!(matches!(row.next().unwrap(), Cell::X));
-        assert!(matches!(row.next().unwrap(), Cell::O));
+        assert!(matches!(row.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(row.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(row.next().unwrap(), Cell::Player(Player::O)));
         assert!(matches!(row.next(), None));
     }
 }

@@ -1,3 +1,4 @@
+use crate::player::Player;
 use core::fmt;
 use std::str::FromStr;
 
@@ -5,15 +6,13 @@ use std::str::FromStr;
 pub enum Cell {
     #[default]
     Unmarked,
-    X,
-    O,
+    Player(Player),
 }
 
 impl fmt::Display for Cell {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Cell::X => write!(f, "X"),
-            Cell::O => write!(f, "O"),
+            Cell::Player(p) => write!(f, "{}", p),
             Cell::Unmarked => write!(f, " "),
         }
     }
@@ -32,8 +31,8 @@ impl FromStr for Cell {
         match cell_str {
             "" => Err(Self::Err::Empty),
             c if c.len() >= 2 => Err(Self::Err::BadLen),
-            "X" => Ok(Cell::X),
-            "O" => Ok(Cell::O),
+            "X" => Ok(Cell::Player(Player::X)),
+            "O" => Ok(Cell::Player(Player::O)),
             " " => Ok(Cell::Unmarked),
             c => Err(Self::Err::BadChar(c.chars().next().unwrap())),
         }

@@ -1,19 +1,19 @@
-use crate::{board::Board, cell::Cell, cell_iterator::CellIterator};
+use crate::{board::Board, cell::Cell, cell_iterator::CellIterator, player::Player};
 
 pub fn board_has_win(board: &Board) -> Cell {
     let mut potential_winner = Cell::Unmarked;
     board.rows().map(iter_has_win).for_each(|cell| {
-        if let Cell::X | Cell::O = cell {
+        if let Cell::Player(Player::X) | Cell::Player(Player::O) = cell {
             potential_winner = cell;
         }
     });
     board.columns().map(iter_has_win).for_each(|cell| {
-        if let Cell::X | Cell::O = cell {
+        if let Cell::Player(Player::X) | Cell::Player(Player::O) = cell {
             potential_winner = cell;
         }
     });
     board.diagonals().map(iter_has_win).for_each(|cell| {
-        if let Cell::X | Cell::O = cell {
+        if let Cell::Player(Player::X) | Cell::Player(Player::O) = cell {
             potential_winner = cell;
         }
     });
@@ -35,13 +35,14 @@ mod tests {
 
     use super::*;
     use crate::board::Board;
+    use crate::player::Player;
 
     #[test]
     fn test_board_with_win() {
         let board = "XOOX OXX ".to_string().parse::<Board>().unwrap();
-        assert!(matches!(board_has_win(&board), Cell::X));
+        assert!(matches!(board_has_win(&board), Cell::Player(Player::X)));
         let board = "OOO XX X ".to_string().parse::<Board>().unwrap();
-        assert!(matches!(board_has_win(&board), Cell::O));
+        assert!(matches!(board_has_win(&board), Cell::Player(Player::O)));
     }
 
     #[test]

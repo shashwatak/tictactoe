@@ -38,6 +38,7 @@ mod tests {
 
     use super::*;
     use crate::board::Board;
+    use crate::player::Player;
 
     #[test]
     fn test_column_iterator() {
@@ -46,21 +47,21 @@ mod tests {
         let mut columns = board.columns();
 
         let mut column = columns.next().unwrap();
-        assert!(matches!(column.next().unwrap(), Cell::X));
-        assert!(matches!(column.next().unwrap(), Cell::O));
-        assert!(matches!(column.next().unwrap(), Cell::X));
+        assert!(matches!(column.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(column.next().unwrap(), Cell::Player(Player::O)));
+        assert!(matches!(column.next().unwrap(), Cell::Player(Player::X)));
         assert!(matches!(column.next(), None));
 
         let mut column = columns.next().unwrap();
-        assert!(matches!(column.next().unwrap(), Cell::O));
-        assert!(matches!(column.next().unwrap(), Cell::X));
-        assert!(matches!(column.next().unwrap(), Cell::X));
+        assert!(matches!(column.next().unwrap(), Cell::Player(Player::O)));
+        assert!(matches!(column.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(column.next().unwrap(), Cell::Player(Player::X)));
         assert!(matches!(column.next(), None));
 
         let mut column = columns.next().unwrap();
-        assert!(matches!(column.next().unwrap(), Cell::X));
-        assert!(matches!(column.next().unwrap(), Cell::O));
-        assert!(matches!(column.next().unwrap(), Cell::O));
+        assert!(matches!(column.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(column.next().unwrap(), Cell::Player(Player::O)));
+        assert!(matches!(column.next().unwrap(), Cell::Player(Player::O)));
         assert!(matches!(column.next(), None));
     }
 }

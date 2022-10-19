@@ -3,6 +3,7 @@ use crate::board_has_win::iter_has_win;
 use crate::cell::Cell;
 use crate::column_iterator::ColumnIterator;
 use crate::diagonal_iterator::DiagonalIterator;
+use crate::player::Player;
 use crate::row_iterator::RowIterator;
 
 #[derive(Debug)]
@@ -17,10 +18,11 @@ fn count_xs_and_os(cells: &[Cell; NUM_CELLS]) -> (usize, usize) {
     let mut num_xs: usize = 0;
     let mut num_os: usize = 0;
     for cell in cells {
-        match cell {
-            Cell::X => num_xs += 1,
-            Cell::O => num_os += 1,
-            _ => (),
+        if let Cell::Player(p) = cell {
+            match p {
+                Player::X => num_xs += 1,
+                Player::O => num_os += 1,
+            }
         }
     }
     (num_xs, num_os)
@@ -41,10 +43,10 @@ pub fn cells_are_valid(cells: &[Cell; NUM_CELLS]) -> Result<(), CellsImpossibleE
         .chain(DiagonalIterator::new(cells));
     for track in tracks {
         let cell = iter_has_win(track);
-        if let Cell::X = cell {
+        if let Cell::Player(Player::X) = cell {
             x_win = true;
         }
-        if let Cell::O = cell {
+        if let Cell::Player(Player::O) = cell {
             o_win = true;
         }
     }
@@ -145,6 +147,5 @@ mod tests {
                 Err(CellsImpossibleError::XPlayAfterOWin)
             ));
         }
-
     }
 }

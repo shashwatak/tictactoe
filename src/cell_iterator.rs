@@ -42,6 +42,7 @@ mod tests {
 
     use super::*;
     use crate::board::Board;
+    use crate::player::Player;
 
     #[test]
     fn test_board_iter() {
@@ -51,9 +52,9 @@ mod tests {
         }
 
         let mut board = CellIterator::new(&board.cells, 0, next_cell_idx);
-        assert!(matches!(board.next().unwrap(), Cell::X));
-        assert!(matches!(board.next().unwrap(), Cell::O));
-        assert!(matches!(board.next().unwrap(), Cell::X));
+        assert!(matches!(board.next().unwrap(), Cell::Player(Player::X)));
+        assert!(matches!(board.next().unwrap(), Cell::Player(Player::O)));
+        assert!(matches!(board.next().unwrap(), Cell::Player(Player::X)));
         assert!(matches!(board.next(), None));
     }
 }

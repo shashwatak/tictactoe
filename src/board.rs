@@ -46,14 +46,14 @@ impl FromStr for Board {
                     match cell_maybe {
                         Ok(cell) => {
                             cells[i] = cell;
-                        },
+                        }
                         Err(ParseCellError::BadChar(c)) => char_errs.push((i, c)),
                         _ => panic!("unexpected unknown error"),
                     }
                 });
                 match &char_errs[..] {
                     [] => match cells_are_valid(&cells) {
-                        Ok(_) => Ok(Board {cells}),
+                        Ok(_) => Ok(Board { cells }),
                         Err(err) => Err(Self::Err::ImpossibleCells(err)),
                     },
                     [..] => Err(Self::Err::BadChars(char_errs)),

@@ -1,11 +1,12 @@
 mod board;
-mod cells_are_valid;
 mod board_has_win;
 mod cell;
 mod cell_iterator;
+mod cells_are_valid;
 mod column_iterator;
-mod row_iterator;
 mod diagonal_iterator;
+mod player;
+mod row_iterator;
 
 use crate::board::{Board, NUM_COLS, NUM_ROWS};
 use crate::board_has_win::board_has_win;
