@@ -2,14 +2,15 @@ use crate::board::{Board, NUM_CELLS, NUM_COLS};
 use crate::board_has_win::board_has_win;
 use crate::cell::Cell;
 use crate::player::Player;
-use crate::cell_id::CellId;
 use core::fmt;
 use std::io::BufRead;
+use crate::cell_id::CellId;
+use crate::game_update::{check_cell, next_player};
 
 #[derive(Debug)]
 pub struct Game {
-    board: Board,
-    player: Player,
+    pub board: Board,
+    pub player: Player,
     num_cells_played: usize,
 }
 
@@ -34,10 +35,15 @@ impl Game {
                 println!("Draw.");
                 break;
             }
+
             let mut line = String::new();
             let input = f.read_line(&mut line).unwrap();
             println!("you said: {}", input);
         }
+    }
+    pub fn update(&mut self, cell_id: CellId) {
+        self.board.cells[cell_id.to_idx()] = Cell::Player(self.player);
+        self.player = next_player(self.player);
     }
 }
 
@@ -63,80 +69,12 @@ impl fmt::Display for Game {
     }
 }
 
-#[derive(Debug)]
-enum GameUpdateError {
-    CellIsFull,
-}
-
-impl Game {
-    fn update(&mut self, cell_id: CellId) -> Result<(), GameUpdateError> {
-        let cell_idx = cell_id.to_idx();
-        if let Cell::Player(_) = self.board.cells[cell_idx] {
-            return Err(GameUpdateError::CellIsFull);
-        }
-        self.board.cells[cell_idx] = Cell::Player(self.player);
-        if let Player::X = self.player {
-            self.player = Player::O;
-        } else if let Player::O = self.player {
-            self.player = Player::X
-        }
-        Ok(())
-    }
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
 
     #[test]
-    fn test_game() {
-        let mut game = Game::new();
-        print!("{}", game);
+    fn test_game_update() {
 
-        let cell_id = "a1".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Ok(_)));
-
-        let cell_id = "a1".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Err(GameUpdateError::CellIsFull)));
-
-        let cell_id = "a2".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Ok(_)));
-
-        
-        let cell_id = "a3".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Ok(_)));
-
-        let cell_id = "b2".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Ok(_)));
-
-
-        let cell_id = "b1".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Ok(_)));
-
-        let cell_id = "c1".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Ok(_)));
-
-
-        let cell_id = "c2".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Ok(_)));
-
-
-        let cell_id = "b3".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Ok(_)));
-
-        let cell_id = "c3".to_string().parse::<CellId>().unwrap();
-        let result = game.update(cell_id);
-        assert!(matches!(result, Ok(_)));
-
-        println!("{}", game);
     }
 }

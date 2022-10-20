@@ -6,6 +6,7 @@ mod cells_are_valid;
 mod column_iterator;
 mod diagonal_iterator;
 mod game;
+mod game_update;
 mod player;
 mod cell_id;
 mod row_iterator;
