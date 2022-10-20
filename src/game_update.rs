@@ -6,7 +6,7 @@ use crate::player::Player;
 #[derive(Debug)]
 pub struct CellIsMarked;
 
-pub fn check_cell(cells: &[Cell; NUM_CELLS], cell_id: CellId) -> Result<(), CellIsMarked> {
+pub fn check_cell(cells: &[Cell; NUM_CELLS], cell_id: &CellId) -> Result<(), CellIsMarked> {
     let cell_idx = cell_id.to_idx();
     if let Cell::Player(_) = cells[cell_idx] {
         return Err(CellIsMarked);
@@ -30,13 +30,13 @@ mod test {
         let mut cells = [Cell::Unmarked; NUM_CELLS];
 
         let cell_id = "a1".to_string().parse::<CellId>().unwrap();
-        let result = check_cell(&cells, cell_id);
+        let result = check_cell(&cells, &cell_id);
         assert!(matches!(result, Ok(_)));
 
         let cell_id = "a1".to_string().parse::<CellId>().unwrap();
         cells[cell_id.to_idx()] = Cell::Player(Player::X);
 
-        let result = check_cell(&cells, cell_id);
+        let result = check_cell(&cells, &cell_id);
         assert!(matches!(result, Err(CellIsMarked)));
     }
 }

@@ -1,11 +1,11 @@
 use crate::board::{Board, NUM_CELLS, NUM_COLS};
 use crate::board_has_win::board_has_win;
 use crate::cell::Cell;
+use crate::cell_id::CellId;
+use crate::game_update::{check_cell, next_player};
 use crate::player::Player;
 use core::fmt;
 use std::io::BufRead;
-use crate::cell_id::CellId;
-use crate::game_update::{check_cell, next_player};
 
 #[derive(Debug)]
 pub struct Game {
@@ -23,7 +23,7 @@ impl Game {
         }
     }
 
-    pub fn run<Input: BufRead>(&self, f: &mut Input) {
+    pub fn run<Input: BufRead>(&mut self, f: &mut Input) {
         loop {
             print!("{}", self);
             let winner = board_has_win(&self.board);
@@ -35,10 +35,22 @@ impl Game {
                 println!("Draw.");
                 break;
             }
-
-            let mut line = String::new();
-            let input = f.read_line(&mut line).unwrap();
-            println!("you said: {}", input);
+            loop {
+                let mut line = String::new();
+                f.read_line(&mut line).unwrap();
+                let maybe_cell_id = line.trim().parse::<CellId>();
+                if let Ok(cell_id) = maybe_cell_id {
+                    if let Ok(_) = check_cell(&self.board.cells, &cell_id) {
+                        self.update(cell_id);
+                        break;
+                    }
+                    else {
+                        println!("That cell is occupied");
+                    }
+                } else {
+                    println!("Please use a-c and 1-3 e.g. b2");
+                }
+            }
         }
     }
     pub fn update(&mut self, cell_id: CellId) {
@@ -74,7 +86,5 @@ mod test {
     use super::*;
 
     #[test]
-    fn test_game_update() {
-
-    }
+    fn test_game_update() {}
 }
