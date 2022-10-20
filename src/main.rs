@@ -13,6 +13,6 @@ mod row_iterator;
 use crate::game::Game;
 
 fn main() {
-    Game::new().run();
+    Game::new().run(&mut std::io::stdin().lock());
 }
 

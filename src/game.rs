@@ -4,6 +4,7 @@ use crate::cell::Cell;
 use crate::player::Player;
 use crate::cell_id::CellId;
 use core::fmt;
+use std::io::BufRead;
 
 #[derive(Debug)]
 pub struct Game {
@@ -21,7 +22,7 @@ impl Game {
         }
     }
 
-    pub fn run(&self) {
+    pub fn run<Input: BufRead>(&self, f: &mut Input) {
         loop {
             print!("{}", self);
             let winner = board_has_win(&self.board);
@@ -34,7 +35,7 @@ impl Game {
                 break;
             }
             let mut line = String::new();
-            let input = std::io::stdin().read_line(&mut line).unwrap();
+            let input = f.read_line(&mut line).unwrap();
             println!("you said: {}", input);
         }
     }
