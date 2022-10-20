@@ -40,7 +40,6 @@ impl FromStr for CellId {
         match input.chars().collect::<Vec<char>>()[..] {
             [] => Err(Self::Err::Empty),
             [column_char, row_char] => {
-                println!("debug {} {}", row_char, column_char);
                 if row_char >= MIN_ROW_CHAR
                     && row_char <= MAX_ROW_CHAR
                     && column_char >= MIN_COLUMN_CHAR
