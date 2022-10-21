@@ -43,8 +43,7 @@ impl Game {
                     if let Ok(_) = check_cell(&self.board.cells, &cell_id) {
                         self.update(cell_id);
                         break;
-                    }
-                    else {
+                    } else {
                         println!("That cell is occupied");
                     }
                 } else {
